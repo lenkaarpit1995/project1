@@ -1,0 +1,41 @@
+import sqlite3
+
+def create_sales_table(conn):
+    """Creates the sales_data table in the database"""
+    create_table_sql = """
+    CREATE TABLE IF NOT EXISTS sales_data (
+        OrderId INTEGER PRIMARY KEY,
+        OrderItemId INTEGER,
+        QuantityOrdered INTEGER,
+        ItemPrice REAL,
+        PromotionDiscount REAL,
+        total_sales REAL,
+        region TEXT,
+        net_sale REAL
+    );
+    """
+    conn.execute(create_table_sql)
+    conn.commit()
+
+def load_data_to_db(conn, data):
+    """Loads the transformed data into the sales_data table"""
+    insert_sql = """
+    INSERT OR REPLACE INTO sales_data (OrderId, OrderItemId, QuantityOrdered, ItemPrice, 
+                                       PromotionDiscount, total_sales, region, net_sale)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    """
+    for _, row in data.iterrows():
+        conn.execute(insert_sql, tuple(row))
+    conn.commit()
+
+# Connect to SQLite database
+conn = sqlite3.connect('sales_data.db')
+
+# Create table
+create_sales_table(conn)
+
+# Load transformed data into the database
+load_data_to_db(conn, transformed_data)
+
+# Close the connection
+conn.close()

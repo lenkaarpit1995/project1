@@ -1,0 +1,34 @@
+import pandas as pd
+import requests
+from io import StringIO
+
+def load_csv_data(url, password):
+    """
+    Downloads and loads CSV data from a SharePoint file (assuming a direct URL access).
+    """
+    headers = {
+        'Authorization': f'Basic {password}'
+    }
+    response = requests.get(url, headers=headers)
+    
+    if response.status_code == 200:
+        # Read the CSV content
+        csv_data = StringIO(response.text)
+        return pd.read_csv(csv_data)
+    else:
+        print(f"Failed to fetch data. HTTP Status: {response.status_code}")
+        return None
+
+# URLs and passwords for the regions
+url_region_a = "https://sharepoint.com/order_region_a.csv"
+password_a = "order_region_a"
+url_region_b = "https://sharepoint.com/order_region_b.csv"
+password_b = "order_region_b"
+
+# Load data
+region_a_data = load_csv_data(url_region_a, password_a)
+region_b_data = load_csv_data(url_region_b, password_b)
+
+# Print the first few rows to ensure data is loaded correctly
+print(region_a_data.head())
+print(region_b_data.head())

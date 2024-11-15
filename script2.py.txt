@@ -1,0 +1,27 @@
+def transform_data(region_a, region_b):
+    # Add a 'region' column to each DataFrame
+    region_a['region'] = 'A'
+    region_b['region'] = 'B'
+    
+    # Combine the two regions into one DataFrame
+    combined_data = pd.concat([region_a, region_b], ignore_index=True)
+    
+    # Add a 'total_sales' column (QuantityOrdered * ItemPrice)
+    combined_data['total_sales'] = combined_data['QuantityOrdered'] * combined_data['ItemPrice']
+    
+    # Add a 'net_sale' column (total_sales - PromotionDiscount)
+    combined_data['net_sale'] = combined_data['total_sales'] - combined_data['PromotionDiscount']
+    
+    # Remove rows where net_sale <= 0
+    combined_data = combined_data[combined_data['net_sale'] > 0]
+    
+    # Remove duplicates based on 'OrderId'
+    combined_data = combined_data.drop_duplicates(subset='OrderId')
+    
+    return combined_data
+
+# Transform the data
+transformed_data = transform_data(region_a_data, region_b_data)
+
+# Print the transformed data
+print(transformed_data.head())

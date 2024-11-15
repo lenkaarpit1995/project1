@@ -1,0 +1,14 @@
+SELECT COUNT(*) FROM sales_data;
+
+SELECT region, SUM(total_sales) AS total_sales_by_region
+FROM sales_data
+GROUP BY region;
+
+SELECT AVG(total_sales) FROM sales_data;
+
+SELECT OrderId, COUNT(*) 
+FROM sales_data
+GROUP BY OrderId
+HAVING COUNT(*) > 1;
+
+
